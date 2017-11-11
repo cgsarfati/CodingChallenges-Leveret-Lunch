@@ -79,6 +79,7 @@ Consider our most complex case::
 """
 
 # PLAN
+    # Input: lst of lsts
     # Can definitely do this recursively but save for optimization
     # Figure out where to start
         # Find length of row/column + midpoints, then get highest value
@@ -86,7 +87,65 @@ Consider our most complex case::
     # Use [i][j] with + to traverse
     # Clockwise search before each traversal
     # Keep counter for # of carrots eaten -- enumerate?
-    # Figure out "out of bounds" error with indices if on the side
+    # *** Avoid "out of bounds" error with indices if on the side
+    # *** Avoid going back to same cell
+    # When no possibilities left, stop
+    # Output: final count of carrots eaten
+
+
+def most_carrots(cells, garden, ncols, nrows):
+    """Find cell with most carrots.
+
+    Given list of (row, col) coords, return coords w/max carrots.
+    Cells provided may be outside grid; drop invalid cells.
+
+    If zero carrots can be found, returns None.
+
+    For example::
+
+        >>> garden = [[2, 3],
+        ...           [0, 3]]
+
+        >>> nrows = len(garden)
+        >>> ncols = len(garden[1])
+
+    For single cell, this should win, as long as it has carrots::
+
+        >>> most_carrots([(0, 0)], garden, ncols, nrows)
+        (0, 0)
+
+    If no carrots can be found, return None::
+
+        >>> most_carrots([(1, 0)], garden, ncols, nrows)
+
+    With a tie (for 3), prefer first-given::
+
+        >>> most_carrots([(0, 0), (0, 1), (1, 0), (1, 1)], garden, ncols, nrows)
+        (0, 1)
+
+    Make sure illegal cells aren't considered::
+
+        >>> most_carrots([(-1, -1), (0, 0), (2, 2)], garden, ncols, nrows)
+        (0, 0)
+    """
+
+    # Make list of (row, col) from cells
+    # Throw out cells that are outside the garden grid.
+
+    legal = [(row, col) for row, col in cells
+             if 0 <= row < nrows and 0 <= col < ncols]
+
+    # Initialize
+    num_carrots = 0
+    best = None
+
+    # Find cells with most carrots
+    for row, col in legal:
+        if num_carrots < garden[row][col]:
+            num_carrots = garden[row][col]
+            best = row, col
+
+    return best
 
 
 def lunch_count(garden):
