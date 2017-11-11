@@ -141,6 +141,7 @@ def most_carrots(cells, garden, ncols, nrows):
 
     # Find cells with most carrots
     for row, col in legal:
+        # Breaks ties r/t < vs. <=
         if num_carrots < garden[row][col]:
             num_carrots = garden[row][col]
             best = row, col
@@ -152,16 +153,51 @@ def lunch_count(garden):
     """Given a garden of nrows of ncols, return carrots eaten."""
 
     # Sanity check that garden is valid
-
     row_lens = [len(row) for row in garden]
     assert min(row_lens) == max(row_lens), "Garden not a matrix!"
     assert all(type(c) is int for c in row for row in garden), \
         "Garden values must be ints!"
 
     # Get number of rows and columns
-
     nrows = len(garden)
     ncols = len(garden[0])
+
+    # Initialize num of carrots eaten counter for final output
+    eaten = 0
+
+    # Find center cells
+    consider = [
+        ((nrows - 1) / 2, (ncols - 1) / 2),
+        ((nrows - 1) / 2, (ncols - 0) / 2),
+        ((nrows - 0) / 2, (ncols - 1) / 2),
+        ((nrows - 0) / 2, (ncols - 0) / 2)
+    ]
+
+    while True:
+
+        # Find row, col coords of cell with most carrots
+        curr = most_carrots(consider, garden, ncols, nrows)
+
+        # We can't find any carrots r/t None output, so take nap & return
+        if not curr:
+            return eaten
+
+        row, col = curr
+
+        # Eat carrots in that cell and mark it as eaten
+        eaten += garden[row][col]
+        garden[row][col] = 0
+
+        # Use the WNES neighbors as our next cells to consider.
+        # The order here is important --- most_carrots breaks ties
+        # by using the first-of-ties, so ensure these are WNES
+
+        consider = [
+            (row, col - 1),  # W
+            (row - 1, col),  # N
+            (row, col + 1),  # E
+            (row + 1, col),  # S
+        ]
 
 
 if __name__ == '__main__':
