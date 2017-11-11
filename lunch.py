@@ -78,6 +78,16 @@ Consider our most complex case::
 
 """
 
+# PLAN
+    # Can definitely do this recursively but save for optimization
+    # Figure out where to start
+        # Find length of row/column + midpoints, then get highest value
+        # Save to a current_position var?
+    # Use [i][j] with + to traverse
+    # Clockwise search before each traversal
+    # Keep counter for # of carrots eaten -- enumerate?
+    # Figure out "out of bounds" error with indices if on the side
+
 
 def lunch_count(garden):
     """Given a garden of nrows of ncols, return carrots eaten."""
